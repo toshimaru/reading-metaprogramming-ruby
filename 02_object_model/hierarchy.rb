@@ -30,6 +30,8 @@ end
 # - C1.ancestors.first(2) が [C1, M1] となる
 # - C1.new.name が 'C1' を返す
 class C1
+  include M1
+
   def name
     'C1'
   end
@@ -41,6 +43,8 @@ end
 # - C2.ancestors.first(2) が [M1, C2] となる
 # - C2.new.name が 'M1' を返す
 class C2
+  prepend M1
+
   def name
     'C2'
   end
