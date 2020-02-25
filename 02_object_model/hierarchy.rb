@@ -79,6 +79,13 @@ end
 #   c4.increment # => "3"
 # - 定義済みのメソッド (value, value=) は private のままとなっている
 class C4
+  def increment
+    old_val = send(:value)
+    old_val ||= 0
+    new_val = old_val + 1
+    self.value = new_val
+    new_val.to_s
+  end
   private
 
   attr_accessor :value
@@ -91,6 +98,11 @@ end
 # - C5.new.another_name が文字列 "M1" を返す
 # - C5.new.other_name が文字列 "Refined M1" を返す
 module M1Refinements
+  refine M1 do
+    def name
+      "Refined M1"
+    end
+  end
 end
 
 class C5
@@ -115,4 +127,8 @@ end
 class C6
   include M1
   using M1Refinements
+
+  def name
+    super
+  end
 end
