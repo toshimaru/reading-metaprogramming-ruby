@@ -55,7 +55,14 @@ end
 # 次の動作をする C3 class, MySuperClass class を実装する
 # - C3.ancestors.first(6) が [M1, C3, M2, M3, MySuperClass, M4] となる
 # - C3.new.name が 'M1' を返す
-class C3
+class MySuperClass
+  include M4
+end
+class C3 < MySuperClass
+  prepend M1
+  include M3
+  include M2
+
   def name
     'C3'
   end
