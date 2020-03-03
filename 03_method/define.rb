@@ -33,16 +33,21 @@ end
 # # - my_attr_accessorはgetter/setterに加えて、boolean値を代入した際のみ真偽値判定を行うaccessorと同名の?メソッドができること
 module OriginalAccessor
   def self.included(base)
-    base.define_singleton_method(:my_attr_accessor) do |attr|
-      base.define_method(attr) do
-        instance_variable_get "@#{attr}"
+    base.extend ClassMethods
+  end
+
+  module ClassMethods
+    def my_attr_accessor(attribute)
+      define_method(attribute) do
+        instance_variable_get("@#{attribute}")
       end
-      base.define_method("#{attr}=") do |val|
-        instance_variable_set "@#{attr}", val
+
+      define_method("#{attribute}=") do |val|
+        instance_variable_set "@#{attribute}", val
         if val.is_a?(TrueClass) || val.is_a?(FalseClass)
-          base.define_method("#{attr}?") { val }
+          self.class.define_method("#{attribute}?") { val }
         else
-          base.undef_method("#{attr}?")
+          self.class.undef_method("#{attribute}?") if self.class.method_defined?("#{attribute}?")
         end
       end
     end
