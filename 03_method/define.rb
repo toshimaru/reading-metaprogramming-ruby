@@ -43,9 +43,7 @@ module OriginalAccessor
       define_method("#{attribute}=") do |val|
         instance_variable_set "@#{attribute}", val
         if val.is_a?(TrueClass) || val.is_a?(FalseClass)
-          self.class.define_method("#{attribute}?") { val }
-        else
-          self.class.undef_method("#{attribute}?") if self.class.method_defined?("#{attribute}?")
+          define_singleton_method("#{attribute}?") { val }
         end
       end
     end
