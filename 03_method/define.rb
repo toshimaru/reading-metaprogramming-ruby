@@ -15,9 +15,9 @@ end
 class A2
   def initialize(ary)
     ary.each do |val|
-      self.class.define_method("hoge_#{val}") do |param|
-        return dev_team if param.nil?
-        __method__.to_s * param
+      define_singleton_method("hoge_#{val}") do |int|
+        return dev_team if int.nil?
+        __method__.to_s * int
       end
     end
   end
