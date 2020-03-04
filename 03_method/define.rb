@@ -38,9 +38,7 @@ module OriginalAccessor
 
   module ClassMethods
     def my_attr_accessor(attribute)
-      define_method(attribute) do
-        instance_variable_get("@#{attribute}")
-      end
+      attr_reader attribute
 
       define_method("#{attribute}=") do |val|
         instance_variable_set "@#{attribute}", val
