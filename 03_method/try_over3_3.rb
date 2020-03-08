@@ -79,6 +79,25 @@ end
 # TryOver3::A4.runners = [:Hoge]
 # TryOver3::A4::Hoge.run
 # # => "run Hoge"
+class TryOver3::A4
+  class << self
+    def runners=(runners)
+      @runners = runners
+    end
+
+    def const_missing(const_name)
+      if @runners.include?(const_name)
+        Class.new do
+          def self.run
+            "run Hoge"
+          end
+        end
+      else
+        super
+      end
+    end
+  end
+end
 
 
 # Q5. チャレンジ問題！ 挑戦する方はテストの skip を外して挑戦してみてください。
