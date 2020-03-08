@@ -60,10 +60,12 @@ module TryOver3::OriginalAccessor2
       end
 
       define_method "#{attr_sym}=" do |value|
-        if [true, false].include?(value) && !respond_to?("#{attr_sym}?")
+        if [true, false].include?(value)
           self.class.define_method "#{attr_sym}?" do
             @attr == true
           end
+        else
+          self.class.undef_method "#{attr_sym}?" if respond_to?("#{attr_sym}?")
         end
         @attr = value
       end
