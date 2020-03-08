@@ -13,6 +13,7 @@ module TryOver3
 
     def method_missing(method_name, *args)
       return run_test if method_name.to_s.start_with?("test_")
+      super
     end
   end
 end
@@ -29,6 +30,23 @@ class TryOver3::A2
   end
 end
 
+class TryOver3::A2Proxy
+  # extend Forwardable
+
+  def initialize(a2_instance)
+    @source = a2_instance
+    # self.class.def_delegators :@source, *@source.public_methods(false)
+  end
+
+  def method_missing(method, *args)
+    return @source.send(method, *args) if @source.class.method_defined?(method)
+    super
+  end
+
+  def respond_to_missing?(method, include_private = false)
+    @source.respond_to?(method) || super
+  end
+end
 
 # Q3
 # 前回 OriginalAccessor の my_attr_accessor で定義した getter/setter に boolean の値が入っている場合には #{name}? が定義されるようなモジュールを実装しました。
