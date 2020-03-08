@@ -88,9 +88,7 @@ class TryOver3::A4
     def const_missing(const_name)
       if @runners.include?(const_name)
         Class.new do
-          def self.run
-            "run Hoge"
-          end
+          define_singleton_method(:run) { "run #{const_name}" }
         end
       else
         super
