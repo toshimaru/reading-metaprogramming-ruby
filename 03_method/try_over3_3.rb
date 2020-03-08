@@ -5,16 +5,14 @@ TryOver3 = Module.new
 # - `test_` から始まるインスタンスメソッドが実行された場合、このクラスは `run_test` メソッドを実行する
 # - `test_` メソッドがこのクラスに実装されていなくても `test_` から始まるメッセージに応答することができる
 # - TryOver3::A1 には `test_` から始まるインスタンスメソッドが定義されていない
-module TryOver3
-  class A1
-    def run_test
-      nil
-    end
+class TryOver3::A1
+  def run_test
+    nil
+  end
 
-    def method_missing(method_name, *args)
-      return run_test if method_name.to_s.start_with?("test_")
-      super
-    end
+  def method_missing(method_name, *args)
+    return run_test if method_name.to_s.start_with?("test_")
+    super
   end
 end
 
@@ -61,11 +59,9 @@ module TryOver3::OriginalAccessor2
 
       define_method "#{attr_sym}=" do |value|
         if [true, false].include?(value)
-          self.class.define_method "#{attr_sym}?" do
-            @attr == true
-          end
+          self.class.define_method("#{attr_sym}?") { @attr }
         else
-          self.class.undef_method "#{attr_sym}?" if respond_to?("#{attr_sym}?")
+          self.class.undef_method("#{attr_sym}?") if respond_to?("#{attr_sym}?")
         end
         @attr = value
       end
