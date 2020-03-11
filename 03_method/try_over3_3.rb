@@ -37,7 +37,7 @@ class TryOver3::A2Proxy
   end
 
   def method_missing(method, *args)
-    @source.send(method, *args)
+    @source.public_send(method, *args)
   end
 
   def respond_to_missing?(method, include_private = false)
@@ -112,7 +112,7 @@ module TryOver3::TaskHelper
         Class.new do
           define_singleton_method :run do
             warn "Warning: #{klass}::#{new_klass_name}.run is duplicated"
-            klass.send(name)
+            klass.public_send(name)
           end
         end
       end
