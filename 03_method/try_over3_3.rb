@@ -103,23 +103,24 @@ module TryOver3::TaskHelper
 
   module ClassMethods
     def task(name, &task_block)
-      @task_name = name
-      @task_block = task_block
+      define_singleton_method(name) do
+        puts "start #{Time.now}"
+        block_return = task_block.call
+        puts "finish #{Time.now}"
+        block_return
+      end
 
-      define_singleton_method(name) { task_block.call }
-    end
-
-    def const_missing(const_name)
-      task_block = @task_block
-      base_klass_name = name
-      new_klass_name = @task_name.to_s.split("_").map{ |w| w[0] = w[0].upcase; w }.join
-      Class.new do
-        define_singleton_method :run do
-          warn "Warning: #{base_klass_name}::#{new_klass_name}.run is duplicated"
-          puts "start #{Time.now}"
-          block_return = task_block.call
-          puts "finish #{Time.now}"
-          block_return
+      define_singleton_method(:const_missing) do |const_name|
+        new_klass_name = name.to_s.split('_').map{ |w| w[0] = w[0].upcase; w }.join
+        Class.new do
+          define_singleton_method :run do
+            warn "Warning: TryOver3::A5Task::#{new_klass_name}.run is duplicated"
+            # TODO: 共通化
+            puts "start #{Time.now}"
+            block_return = task_block.call
+            puts "finish #{Time.now}"
+            block_return
+          end
         end
       end
     end
