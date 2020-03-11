@@ -37,8 +37,7 @@ class TryOver3::A2Proxy
   end
 
   def method_missing(method, *args)
-    return @source.send(method, *args) if @source.class.method_defined?(method)
-    super
+    @source.send(method, *args)
   end
 
   def respond_to_missing?(method, include_private = false)
