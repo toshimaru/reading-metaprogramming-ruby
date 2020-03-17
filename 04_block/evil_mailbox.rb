@@ -23,8 +23,11 @@ class EvilMailbox
     @obj = obj
   end
 
-  def send_mail(to, body)
-    @obj.send_mail(to, body)
+  def send_mail(to, body, &block)
+    send_result = @obj.send_mail(to, body)
+    if block_given?
+      block.call(send_result)
+    end
     nil
   end
 
