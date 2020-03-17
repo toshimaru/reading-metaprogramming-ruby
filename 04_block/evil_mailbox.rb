@@ -23,6 +23,7 @@ class EvilMailbox
     @obj = obj
     unless str.nil?
       @obj.auth(str)
+      # TODO: what to do
     end
   end
 
