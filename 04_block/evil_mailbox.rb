@@ -24,11 +24,12 @@ class EvilMailbox
     unless str.nil?
       @obj.auth(str)
       # TODO: what to do
+      @obj.instance_eval { @secret = str }
     end
   end
 
   def send_mail(to, body, &block)
-    send_result = @obj.send_mail(to, body)
+    send_result = @obj.send_mail(to, "#{body}#{@obj.instance_eval { @secret }}")
     if block_given?
       block.call(send_result)
     end
