@@ -21,19 +21,13 @@
 class EvilMailbox
   def initialize(obj, str = nil)
     @obj = obj
-    unless str.nil?
-      @obj.auth(str)
-      # TODO: what to do
-      @obj.instance_eval { @secret = str }
-    end
-  end
+    @obj.auth(str) unless str.nil?
 
-  def send_mail(to, body, &block)
-    send_result = @obj.send_mail(to, "#{body}#{@obj.instance_eval { @secret }}")
-    if block_given?
-      block.call(send_result)
+    define_singleton_method(:send_mail) do |to, body, &block|
+      send_result = @obj.send_mail(to, body + str.to_s)
+      block&.call(send_result)
+      nil
     end
-    nil
   end
 
   def receive_mail
