@@ -31,7 +31,7 @@ class SimpleBot
 
     def setting(attribute, val)
       self.settings ||= OpenStruct.new
-      self.settings.send("#{attribute}=", val)
+      self.settings[attribute] = val
     end
 
     def respond(key, &block)
