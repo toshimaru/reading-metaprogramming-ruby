@@ -30,8 +30,8 @@ class SimpleBot
     attr_accessor :settings
 
     def setting(attribute, val)
-      settings ||= OpenStruct.new
-      settings.send("#{attribute}=", val)
+      self.settings ||= OpenStruct.new
+      self.settings.send("#{attribute}=", val)
     end
 
     def respond(key, &block)
