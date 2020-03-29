@@ -18,7 +18,7 @@ module SimpleModel
     base.extend ClassMethods
   end
 
-  def initialize(hash)
+  def initialize(hash = {})
     @hash = hash
     @changed = false
     attributes.each do |attr|
