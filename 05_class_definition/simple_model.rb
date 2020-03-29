@@ -22,12 +22,12 @@ module SimpleModel
     @hash = hash
     @changed = false
     attributes.each do |attr|
-      instance_variable_set("@#{attr}", @hash[attr]) if @hash.key?(attr)
+      instance_variable_set("@#{attr}", hash[attr])
     end
   end
 
   def changed?
-    !!@changed
+    @changed
   end
 
   def restore!
@@ -44,19 +44,10 @@ module SimpleModel
         define_method("#{attr}_changed?") { false }
         define_method("#{attr}=") do |value|
           instance_variable_set "@#{attr}", value
-          instance_variable_set "@changed", true
+          @changed = true
           define_singleton_method("#{attr}_changed?") { true }
         end
       end
     end
   end
 end
-
-# class SampleModel
-#   include SimpleModel
-
-#   # attr_accessor :todo1
-#   attr_accessor :todo2, :todo3
-# end
-
-# m = SampleModel.new(todo2: :hello)
