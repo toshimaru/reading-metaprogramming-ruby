@@ -19,8 +19,11 @@ module SimpleModel
   end
 
   def initialize(hash)
-    @init_hash = hash
-    init
+    @hash = hash
+    @changed = false
+    attributes.each do |attr|
+      instance_variable_set("@#{attr}", @hash[attr]) if @hash.key?(attr)
+    end
   end
 
   def changed?
@@ -28,14 +31,7 @@ module SimpleModel
   end
 
   def restore!
-    init
-    @changed = false
-  end
-
-  def init
-    attributes.each do |attr|
-      instance_variable_set("@#{attr}", @init_hash[attr]) if @init_hash.key?(attr)
-    end
+    initialize(@hash)
   end
 
   module ClassMethods
@@ -45,12 +41,12 @@ module SimpleModel
       define_method(:attributes) { attrs }
 
       attrs.each do |attr|
+        define_method("#{attr}_changed?") { false }
         define_method("#{attr}=") do |value|
           instance_variable_set "@#{attr}", value
           instance_variable_set "@changed", true
           define_singleton_method("#{attr}_changed?") { true }
         end
-        define_method("#{attr}_changed?") { false }
       end
     end
   end
