@@ -12,3 +12,76 @@
 # 2. initializeメソッドはハッシュを受け取り、attr_accessorで作成したアトリビュートと同名のキーがあれば、自動でインスタンス変数に記録する
 #   1. ただし、この動作をwriterメソッドの履歴に残してはいけない
 # 3. 履歴がある場合、すべての操作履歴を放棄し、値も初期状態に戻す `restore!` メソッドを作成する
+
+module SimpleModel
+  def self.included(base)
+    # base.extend ClassMethods
+
+    base.define_singleton_method(:attr_accessor) do |*attrs|
+      attrs.each do |attr|
+        attr_reader attr
+
+        define_method("changed?") { false }
+        define_method("#{attr}_changed?") { false }
+
+        define_method("#{attr}=") do |value|
+          instance_variable_set "@#{attr}", value
+          define_singleton_method("#{attr}_changed?") { true }
+          define_singleton_method("changed?") { true }
+        end
+
+        @attributes ||= []
+        @attributes << attr
+        attributes = @attributes
+
+        define_method(:attributes) { attributes }
+      end
+    end
+  end
+
+  def initialize(hash)
+    @init_hash = hash
+    init
+  end
+
+  # def changed?
+  #   # TODO
+  # end
+
+  def restore!
+    init
+    define_singleton_method("changed?") { false }
+  end
+
+  def init
+    attributes.each do |attr|
+      instance_variable_set("@#{attr}", @init_hash[attr]) if @init_hash.key?(attr)
+    end
+  end
+
+  # module ClassMethods
+  #   def attr_accessor(attr)
+  #     attr_reader attr
+
+  #     define_method("#{attr}=") do |value|
+  #       instance_variable_set "@#{attr}", value
+  #       define_singleton_method("#{attr}_changed?") { true }
+  #     end
+
+  #     @attributes ||= []
+  #     @attributes << attr
+  #     attributes = @attributes
+
+  #     define_method(:attributes) { attributes }
+  #   end
+  # end
+end
+
+# class SampleModel
+#   include SimpleModel
+
+#   # attr_accessor :todo1
+#   attr_accessor :todo2, :todo3
+# end
+
+# m = SampleModel.new(todo2: :hello)
