@@ -15,28 +15,7 @@
 
 module SimpleModel
   def self.included(base)
-    # base.extend ClassMethods
-
-    base.define_singleton_method(:attr_accessor) do |*attrs|
-      attrs.each do |attr|
-        attr_reader attr
-
-        define_method("changed?") { false }
-        define_method("#{attr}_changed?") { false }
-
-        define_method("#{attr}=") do |value|
-          instance_variable_set "@#{attr}", value
-          define_singleton_method("#{attr}_changed?") { true }
-          define_singleton_method("changed?") { true }
-        end
-
-        @attributes ||= []
-        @attributes << attr
-        attributes = @attributes
-
-        define_method(:attributes) { attributes }
-      end
-    end
+    base.extend ClassMethods
   end
 
   def initialize(hash)
@@ -44,13 +23,13 @@ module SimpleModel
     init
   end
 
-  # def changed?
-  #   # TODO
-  # end
+  def changed?
+    !!@changed
+  end
 
   def restore!
     init
-    define_singleton_method("changed?") { false }
+    @changed = false
   end
 
   def init
@@ -59,22 +38,29 @@ module SimpleModel
     end
   end
 
-  # module ClassMethods
-  #   def attr_accessor(attr)
-  #     attr_reader attr
+  module ClassMethods
+    def attr_accessor(*attrs)
+      attr_reader *attrs
+      
+      # define_method("changed?") { false }
+      @attributes ||= []
 
-  #     define_method("#{attr}=") do |value|
-  #       instance_variable_set "@#{attr}", value
-  #       define_singleton_method("#{attr}_changed?") { true }
-  #     end
+      attrs.each do |attr|
+        define_method("#{attr}=") do |value|
+          instance_variable_set "@#{attr}", value
+          instance_variable_set "@changed", true
+          define_singleton_method("#{attr}_changed?") { true }
+        end
 
-  #     @attributes ||= []
-  #     @attributes << attr
-  #     attributes = @attributes
+        define_method("#{attr}_changed?") { false }
 
-  #     define_method(:attributes) { attributes }
-  #   end
-  # end
+        @attributes << attr
+        attributes = @attributes
+
+        define_method(:attributes) { attributes }
+      end
+    end
+  end
 end
 
 # class SampleModel
