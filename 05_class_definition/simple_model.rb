@@ -42,8 +42,7 @@ module SimpleModel
     def attr_accessor(*attrs)
       attr_reader *attrs
       
-      # define_method("changed?") { false }
-      @attributes ||= []
+      define_method(:attributes) { attrs }
 
       attrs.each do |attr|
         define_method("#{attr}=") do |value|
@@ -51,13 +50,7 @@ module SimpleModel
           instance_variable_set "@changed", true
           define_singleton_method("#{attr}_changed?") { true }
         end
-
         define_method("#{attr}_changed?") { false }
-
-        @attributes << attr
-        attributes = @attributes
-
-        define_method(:attributes) { attributes }
       end
     end
   end
