@@ -70,11 +70,3 @@ module SimpleMock
     end
   end
 end
-
-=begin
-require './05_class_definition/simple_mock'
-
-obj = SimpleMock.new
-obj.expects(:imitated_method, true)
-obj.imitated_method #=> true
-=end
