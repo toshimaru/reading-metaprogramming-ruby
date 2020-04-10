@@ -108,8 +108,9 @@ module TryOver3::TaskHelper
         block_return
       end
 
-      define_singleton_method(:const_missing) do |_|
+      define_singleton_method(:const_missing) do |const_name|
         new_klass_name = name.to_s.split('_').map{ |w| w[0] = w[0].upcase; w }.join
+        return super(const_name) if const_name.to_s != new_klass_name
 
         Class.new do
           define_singleton_method(:run) do
