@@ -53,6 +53,8 @@ module SimpleMock
     method_called_hash[method_name]
   end
 
+  private
+
   def method_called_hash
     @method_called_hash ||= {}
   end
