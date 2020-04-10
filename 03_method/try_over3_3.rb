@@ -113,7 +113,7 @@ module TryOver3::TaskHelper
 
         Class.new do
           define_singleton_method(:run) do
-            warn "Warning: #{klass}::#{new_klass_name}.run is deplicated"
+            warn "Warning: #{klass}::#{new_klass_name}.run is deprecated"
             klass.public_send(name)
           end
         end
